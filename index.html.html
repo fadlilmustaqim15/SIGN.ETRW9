@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Persebaran Bangunan RW 09</title>
+
+<!-- MAPBOX -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #1a56db;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+}
+
+/* PETUNJUK */
+.sidebar {
+    width: 25%;
+    padding: 15px;
+    background: #f5f5f5;
+}
+
+/* MAP */
+.map-container {
+    width: 75%;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 500px;
+}
+
+/* LEGENDA */
+.legend {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    background: white;
+    padding: 10px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+.legend div {
+    margin-bottom: 5px;
+}
+
+.legend span {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+}
+
+/* BUTTON */
+#fly {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>Persebaran Bangunan RW 09 Kampung Buntalan</h2>
+</div>
+
+<div class="container">
+
+    <!-- PETUNJUK -->
+    <div class="sidebar">
+        <h4>Petunjuk</h4>
+        <p>Klik bangunan untuk melihat informasi RT.</p>
+        <p>Gunakan zoom untuk memperbesar peta.</p>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-container">
+        <div id="map"></div>
+        <button id="fly">Lokasi</button>
+
+        <div class="legend">
+            <b>Legenda</b>
+            <div><span style="background:#e41a1c"></span> RT01</div>
+            <div><span style="background:#377eb8"></span> RT02</div>
+            <div><span style="background:#4daf4a"></span> RT03</div>
+            <div><span style="background:#ff7f00"></span> RT04</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+// TOKEN MAPBOX 
+mapboxgl.accessToken = 'pk.eyJ1Ijoib2N0b3JhbWFkaGFuMDUiLCJhIjoiY21ucTVkeWp4MDN0dTJyb2tnd3BxeHNiYyJ9.sCBZspT04lvgK07aC1-E-g';
+
+// MAP
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [110.41085683225549, -7.763767046675693],
+    zoom: 15
+});
+
+// LOAD DATA
+map.on('load', () => {
+
+    // RT01
+    map.addSource('rt01', {
+        type: 'geojson',
+        data: 'assets/geojson/RT01.geojson'
+    });
+
+    map.addLayer({
+        id: 'rt01',
+        type: 'fill',
+        source: 'rt01',
+        paint: {
+            'fill-color': '#e41a1c',
+            'fill-opacity': 0.7
+        }
+    });
+
+    // RT02
+    map.addSource('rt02', {
+        type: 'geojson',
+        data: 'assets/geojson/RT02.geojson'
+    });
+
+    map.addLayer({
+        id: 'rt02',
+        type: 'fill',
+        source: 'rt02',
+        paint: {
+            'fill-color': '#377eb8',
+            'fill-opacity': 0.7
+        }
+    });
+
+    // RT03
+    map.addSource('rt03', {
+        type: 'geojson',
+        data: 'assets/geojson/RT03.geojson'
+    });
+
+    map.addLayer({
+        id: 'rt03',
+        type: 'fill',
+        source: 'rt03',
+        paint: {
+            'fill-color': '#4daf4a',
+            'fill-opacity': 0.7
+        }
+    });
+
+    // RT04
+    map.addSource('rt04', {
+        type: 'geojson',
+        data: 'assets/geojson/RT04.geojson'
+    });
+
+    map.addLayer({
+        id: 'rt04',
+        type: 'fill',
+        source: 'rt04',
+        paint: {
+            'fill-color': '#ff7f00',
+            'fill-opacity': 0.7
+        }
+    });
+
+});
+
+// POPUP
+const popup = new mapboxgl.Popup({ closeButton: false });
+
+// FUNCTION POPUP
+function addPopup(layer){
+    map.on('mouseenter', layer, (e) => {
+        map.getCanvas().style.cursor = 'pointer';
+        popup.setLngLat(e.lngLat)
+            .setText("RT: " + e.features[0].properties.RT)
+            .addTo(map);
+    });
+
+    map.on('mouseleave', layer, () => {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+}
+
+// APPLY KE SEMUA RT
+addPopup('rt01');
+addPopup('rt02');
+addPopup('rt03');
+addPopup('rt04');
+
+// NAVIGATION
+map.addControl(new mapboxgl.NavigationControl());
+
+// FLY BUTTON
+document.getElementById('fly').addEventListener('click', () => {
+    map.flyTo({
+        center: [110.41085683225549, -7.763767046675693],
+        zoom: 17
+    });
+});
+
+</script>
+
+</body>
+</html>
