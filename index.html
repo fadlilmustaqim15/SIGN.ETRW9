@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>WebGIS RW 09</title>
+
+<!-- CSS QGIS2WEB -->
+<link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+<link rel="stylesheet" href="css/L.Control.Locate.min.css">
+<link rel="stylesheet" href="css/qgis2web.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" href="css/leaflet.photon.css">
+<link rel="stylesheet" href="css/leaflet-measure.css">
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+}
+
+/* NAVBAR */
+.navbar {
+    background:#1a56db;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:20px;
+}
+
+/* LAYOUT */
+.container {
+    display:flex;
+    height: calc(100vh - 60px);
+}
+
+/* SIDEBAR */
+.sidebar {
+    width:25%;
+    background:#f5f5f5;
+    padding:15px;
+}
+
+/* MAP */
+.map-container {
+    width:75%;
+    position:relative;
+}
+
+#map {
+    width:100%;
+    height:100%;
+}
+
+/* LEGEND CUSTOM */
+.legend-custom {
+    position:absolute;
+    bottom:20px;
+    left:10px;
+    background:white;
+    padding:10px;
+    font-size:12px;
+    border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+Persebaran Bangunan RW 09 Kampung Buntalan
+</div>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Petunjuk</h3>
+        <p>Klik bangunan untuk melihat informasi RT.</p>
+        <p>Gunakan zoom untuk memperbesar peta.</p>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-container">
+        <div id="map"></div>
+
+        <!-- LEGEND -->
+        <div class="legend-custom">
+            <b>Legenda</b><br>
+            RT01<br>
+            RT02<br>
+            RT03<br>
+            RT04
+        </div>
+    </div>
+
+</div>
+
+<!-- JS QGIS2WEB -->
+<script src="js/qgis2web_expressions.js"></script>
+<script src="js/leaflet.js"></script>
+<script src="js/L.Control.Layers.Tree.min.js"></script>
+<script src="js/L.Control.Locate.min.js"></script>
+<script src="js/leaflet.rotatedMarker.js"></script>
+<script src="js/leaflet.pattern.js"></script>
+<script src="js/leaflet-hash.js"></script>
+<script src="js/Autolinker.min.js"></script>
+<script src="js/rbush.min.js"></script>
+<script src="js/labelgun.min.js"></script>
+<script src="js/labels.js"></script>
+<script src="js/leaflet.photon.js"></script>
+<script src="js/leaflet-measure.js"></script>
+
+<!-- DATA -->
+<script src="data/RT01_3.js"></script>
+<script src="data/RT03_4.js"></script>
+<script src="data/RT04_5.js"></script>
+<script src="data/RT02_6.js"></script>
+
+<script>
+
+// ======= SCRIPT ASLI QGIS2WEB (TIDAK DIUBAH) =======
+
+var map = L.map('map', {
+    zoomControl:false, maxZoom:28, minZoom:1
+}).fitBounds([[-7.729734827739133,110.59494219201241],[-7.727167648427299,110.60210591305298]]);
+
+L.control.zoom({position:'topright'}).addTo(map);
+
+L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// ======= STYLE WARNA SESUAI WEB KAMU =======
+
+function style_RT01() {
+    return { color:'#e41a1c', fillColor:'#e41a1c', fillOpacity:0.7 };
+}
+function style_RT02() {
+    return { color:'#377eb8', fillColor:'#377eb8', fillOpacity:0.7 };
+}
+function style_RT03() {
+    return { color:'#4daf4a', fillColor:'#4daf4a', fillOpacity:0.7 };
+}
+function style_RT04() {
+    return { color:'#ff7f00', fillColor:'#ff7f00', fillOpacity:0.7 };
+}
+
+// ======= LAYER =======
+
+L.geoJSON(json_RT01_3, { style: style_RT01 }).addTo(map);
+L.geoJSON(json_RT02_6, { style: style_RT02 }).addTo(map);
+L.geoJSON(json_RT03_4, { style: style_RT03 }).addTo(map);
+L.geoJSON(json_RT04_5, { style: style_RT04 }).addTo(map);
+
+</script>
+
+</body>
+</html>
