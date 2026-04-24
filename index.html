@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>WebGIS RW 09</title>
+
+<link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+<link rel="stylesheet" href="css/L.Control.Locate.min.css">
+<link rel="stylesheet" href="css/qgis2web.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" href="css/leaflet.photon.css">
+<link rel="stylesheet" href="css/leaflet-measure.css">
+
+<style>
+body { margin:0; font-family:'Segoe UI'; }
+
+.navbar {
+    background: linear-gradient(90deg,#1a56db,#2563eb);
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.container {
+    display:flex;
+    height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width:280px;
+    background:white;
+    padding:20px;
+    box-shadow:2px 0 12px rgba(0,0,0,0.1);
+}
+
+.card {
+    background:#f9fafb;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.map-container { flex:1; position:relative; }
+#map { width:100%; height:100%; }
+
+.btn {
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    background:#1a56db;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* CHECKBOX STYLE */
+.checkbox {
+    margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+WEBGIS PERSEBARAN BANGUNAN RW 09
+</div>
+
+<div class="container">
+
+<div class="sidebar">
+
+<div class="card">
+<h3>📌 Informasi</h3>
+<p>Klik bangunan untuk melihat RT.</p>
+</div>
+
+<div class="card">
+<h3>📊 Statistik</h3>
+<button class="btn" onclick="hitungRT()">Hitung Bangunan</button>
+<div id="hasil"></div>
+</div>
+
+<div class="card">
+<h3>🎯 Filter RT</h3>
+
+<label class="checkbox">
+<input type="checkbox" checked onchange="toggleLayer(this, layer_RT01)"> RT01
+</label>
+
+<label class="checkbox">
+<input type="checkbox" checked onchange="toggleLayer(this, layer_RT02)"> RT02
+</label>
+
+<label class="checkbox">
+<input type="checkbox" checked onchange="toggleLayer(this, layer_RT03)"> RT03
+</label>
+
+<label class="checkbox">
+<input type="checkbox" checked onchange="toggleLayer(this, layer_RT04)"> RT04
+</label>
+
+</div>
+
+<div class="card">
+<h3>📍 Navigasi</h3>
+<button class="btn" onclick="zoomLokasi()">Zoom Lokasi</button>
+</div>
+
+</div>
+
+<div class="map-container">
+<div id="map"></div>
+</div>
+
+</div>
+
+<!-- JS -->
+<script src="js/qgis2web_expressions.js"></script>
+<script src="js/leaflet.js"></script>
+<script src="js/L.Control.Layers.Tree.min.js"></script>
+<script src="js/L.Control.Locate.min.js"></script>
+<script src="js/leaflet.pattern.js"></script>
+<script src="js/leaflet-hash.js"></script>
+<script src="js/Autolinker.min.js"></script>
+<script src="js/rbush.min.js"></script>
+<script src="js/labelgun.min.js"></script>
+<script src="js/labels.js"></script>
+<script src="js/leaflet.photon.js"></script>
+<script src="js/leaflet-measure.js"></script>
+
+<script src="data/RT01_3.js"></script>
+<script src="data/RT03_4.js"></script>
+<script src="data/RT04_5.js"></script>
+<script src="data/RT02_6.js"></script>
+
+<script>
+
+// INIT MAP
+var map = L.map('map').fitBounds([
+[-7.7297,110.5949],
+[-7.7271,110.6021]
+]);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// STYLE
+function style(color){
+    return {color:color, fillColor:color, fillOpacity:0.7};
+}
+
+// POPUP
+function popup(feature, layer){
+    layer.bindPopup("RT: " + feature.properties.RT);
+}
+
+// LAYER
+var layer_RT01 = L.geoJSON(json_RT01_3,{style:style('#e41a1c'),onEachFeature:popup}).addTo(map);
+var layer_RT02 = L.geoJSON(json_RT02_6,{style:style('#377eb8'),onEachFeature:popup}).addTo(map);
+var layer_RT03 = L.geoJSON(json_RT03_4,{style:style('#4daf4a'),onEachFeature:popup}).addTo(map);
+var layer_RT04 = L.geoJSON(json_RT04_5,{style:style('#ff7f00'),onEachFeature:popup}).addTo(map);
+
+// MEASURE
+new L.Control.Measure({
+    position:'topleft',
+    primaryLengthUnit:'meters',
+    secondaryLengthUnit:'kilometers'
+}).addTo(map);
+
+// HITUNG
+function hitungRT(){
+    document.getElementById("hasil").innerHTML =
+    `RT01: ${layer_RT01.toGeoJSON().features.length}<br>
+     RT02: ${layer_RT02.toGeoJSON().features.length}<br>
+     RT03: ${layer_RT03.toGeoJSON().features.length}<br>
+     RT04: ${layer_RT04.toGeoJSON().features.length}`;
+}
+
+// FILTER
+function toggleLayer(checkbox, layer){
+    if(checkbox.checked){
+        map.addLayer(layer);
+    } else {
+        map.removeLayer(layer);
+    }
+}
+
+// ZOOM
+function zoomLokasi(){
+    map.fitBounds([[-7.7297,110.5949],[-7.7271,110.6021]]);
+}
+
+</script>
+
+</body>
+</html>
